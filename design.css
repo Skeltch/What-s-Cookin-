@@ -1,0 +1,27 @@
+body,html{
+	font: 400 15px/1.8 "Lato", sans-serif;
+}
+
+.h1{
+	text-align: center;
+}
+
+.markerLabels{
+	background-color:#ffffff; font-weight: bold; border: 2px #006699 solid;
+}
+
+#search{
+	font: 400 15px/1.8 "Lato", sans-serif;
+	background-color: #008CBA; 
+	border: none; 
+	padding: 10px 10px; 
+	margin-bottom: 15px; 
+	font-size: 16px; 
+	border-radius: 8px;
+}
+
+#search:hover{
+	background-color: #008CBA;
+	color: white;
+}
+

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE&callback=initMap">
+    </script>
+	<script src="maplabel-compiled.js"></script>
+	<script src="get.js"></script>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+  <body>
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+	<script>
+		function initMap() {
+			var styledMapType = new google.maps.StyledMapType(
+			[
+			  {
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#1d2c4d"
+				  }
+				]
+			  },
+			  {
+				"elementType": "labels",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#8ec3b9"
+				  }
+				]
+			  },
+			  {
+				"elementType": "labels.text.stroke",
+				"stylers": [
+				  {
+					"color": "#1a3646"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.country",
+				"elementType": "geometry.stroke",
+				"stylers": [
+				  {
+					"color": "#4b6878"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.land_parcel",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.land_parcel",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#64779e"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.neighborhood",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.province",
+				"elementType": "geometry.stroke",
+				"stylers": [
+				  {
+					"color": "#4b6878"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape.man_made",
+				"elementType": "geometry.stroke",
+				"stylers": [
+				  {
+					"color": "#334e87"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape.natural",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#023e58"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#283d6a"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#6f9ba5"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi",
+				"elementType": "labels.text.stroke",
+				"stylers": [
+				  {
+					"color": "#1d2c4d"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi.park",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#023e58"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi.park",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#3C7680"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#304a7d"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#98a5be"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"elementType": "labels.text.stroke",
+				"stylers": [
+				  {
+					"color": "#1d2c4d"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road.highway",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#2c6675"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road.highway",
+				"elementType": "geometry.stroke",
+				"stylers": [
+				  {
+					"color": "#255763"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road.highway",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#b0d5ce"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road.highway",
+				"elementType": "labels.text.stroke",
+				"stylers": [
+				  {
+					"color": "#023e58"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#98a5be"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit",
+				"elementType": "labels.text.stroke",
+				"stylers": [
+				  {
+					"color": "#1d2c4d"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit.line",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#283d6a"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit.station",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#3a4762"
+				  }
+				]
+			  },
+			  {
+				"featureType": "water",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"color": "#0e1626"
+				  }
+				]
+			  },
+			  {
+				"featureType": "water",
+				"elementType": "labels.text.fill",
+				"stylers": [
+				  {
+					"color": "#4e6d70"
+				  }
+				]
+			  }
+			],
+			{name: 'Styled Map'});
+			var uluru = {lat: 40.39, lng: -74.434};
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 13,
+				center: uluru
+			});
+			var marker = new google.maps.Marker({
+				position: uluru,
+				title: 'AAAAAAA',
+				map: map
+			});
+			var mapLabel = new MapLabel({
+				text: 'Test',
+				position: uluru,
+				map: map,
+				fontSize: 35,
+				align: 'right'
+			});
+			map.mapTypes.set('styled_map', styledMapType);
+			map.setMapTypeId('styled_map');
+			marker.bindTo('map',mapLabel);
+			marker.bindTo('position', mapLabel);
+		}
+    </script>
+  </body>
+</html>

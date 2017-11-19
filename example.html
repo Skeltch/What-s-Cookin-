@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="styles.css">
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="maplabel-compiled.js"></script>
+    <title>What's Cookin'</title>
+  </head>
+  <body>
+    <h1>What's Cookin'</h1>
+    <div id="map" style="width: 500px; height: 600px; float: left"></div>
+	<div class="infoArea">
+		<li class="navBar">
+			<a class="navButton" onclick="openTab('info')">Info</a><!--
+			--><a class="navButton" onclick="openTab('myInfo')">My Restaurant</a>
+		</li>
+		<button id="addMarker" onclick="addMarker()">Add Marker</button>
+		<div id="info" class="tabBody">
+			<div class="column">
+				<input placeholder="Enter Search Address" id="searchBar"></input> 
+				<div id="rangeContainer">
+					<input id="mileRange" type="range" min="1" max="100" value="10" class="slider"></input>
+				</div>
+				<div>
+					Miles: <span id="miles">10</span>
+				</div>
+				<div>
+					
+				</div>
+				<div>
+					<button id="search" onclick="search()">Search</button>
+				</div>
+				<div>
+					
+				</div>
+				<div style="overflow:auto; height:342px ;display: inline-block;">
+					<table id="searchResults">
+						<tr class="columnHeader">
+							<th onclick="sort(0)">Restaurant Name</th>
+							<th onclick="sort(1)">Price</th>
+							<th onclick="sort(2)">Rating</th>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="column">
+				<h1 id="restaurantName" style="margin-top: 0px;">Restaurant Name</h1>
+				<h3 id="ownerName">Owner Name</h3>
+				<h4 id="price">$$$</h5>
+				<div class="rating">
+					<span class="ratingStars">&star;</span><!--
+					--><span class="ratingStars">&star;</span><!--
+					--><span class="ratingStars">&star;</span><!--
+					--><span class="ratingStars">&star;</span><!--
+					--><span class="ratingStars">&star;</span>
+				</div>
+				<div><span class="tags">Tags</span><span class="tags">Tags1</span></div>
+				<p>Description</p>
+				<h3>Leave a Review</h3>
+				<div class="ratingReview">
+					<span class="stars" onclick="rate(5)">&star;</span><!--
+					--><span class="stars" onclick="rate(4)">&star;</span><!--
+					--><span class="stars" onclick="rate(3)">&star;</span><!--
+					--><span class="stars" onclick="rate(2)">&star;</span><!--
+					--><span class="stars" onclick="rate(1)">&star;</span>
+				</div>
+				<!--
+				Phil: Review and tag table, think of something for description (web scrape)
+				Think about transaction table
+				Sam: Tags submission, filter, and find out how to communicate with backend 
+				Patterns
+					Review to Price
+					Review description to rating
+				Constraints
+					Delete user, reviews become anonymous
+					Delete restaurant?
+				Different Queries
+					Address Search (this is big)
+					Transaction Search
+					User Search
+					Search by Restaurant
+					Tags Search
+				-->
+				<!--TAGS?
+				Fast,Spicy,Salty,Sweet,Sour,Great Value, Vegetarian, Peanut Free, WiFi,
+				Accommodating, Good Ambiance, Parking, Kid Friendly, Pets allowed
+				-->
+				<div>
+					<select id="tagSelector">
+						<option value=""></option>
+					</select>
+				</div>
+				<div>
+					<textarea id="reviewBody"></textarea>
+				</div>
+				<button onclick="Submit Review">Submit</button>
+			</div>
+		</div>
+		<div id="myInfo" class="tabBody" style="display: none">
+			<button id="editButton" onclick="openTab('editInfo')">Edit Restaurant</button>
+			<h1 id="myRestaurantName">My Restaurant Name</h1>
+			<h3 id="myName">My Name</h3>
+			<h4 id="myPrice">$$$</h4>
+			<div class="rating">
+				<span class="myRatingStars">&star;</span><!--
+				--><span class="myRatingStars">&star;</span><!--
+				--><span class="myRatingStars">&star;</span><!--
+				--><span class="myRatingStars">&star;</span><!--
+				--><span class="myRatingStars">&star;</span>
+			</div>
+			<p id="myDescription">My Description</p>
+		</div>
+		<div id="editInfo" class="tabBody" style="display: none">
+			<h1>Restaurant Name:</h1>
+			<input id="editMyRestaurantName"></input>
+			<h3>My Description:</h3>
+			<input id="editMyDescription"></input>
+			<div>
+				<button id="submitEdit">Submit</button>
+			</div>
+		</div>
+	</div>
+  </body>
+	<script src="map.js"></script>
+</html>

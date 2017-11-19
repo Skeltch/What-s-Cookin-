@@ -1,0 +1,134 @@
+.navBar{
+	list-style: none;
+	background-color: #003399;
+	overflow: auto;
+}
+
+.navButton{
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	text-decoration: none;
+	-webkit-transition-duration: .4s;
+	transition-duration: .4s;
+	cursor: pointer;
+	padding: 10px;
+	vertical-align: center;
+	display: inline-block;
+	color: white;
+}
+
+.navButton:hover{
+	color: white;
+	background-color: #2166ef;
+}
+
+.column{
+	box-sizing: border-box;
+	float: left;
+	width: 30%;
+	padding: 10px;
+}
+
+.row:after{
+	content: "";
+	display: table;
+	clear: both;
+}
+
+#searchBar{
+	width: 100%;
+}
+
+table{
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+}
+
+.columnHeader{
+	cursor: pointer;
+}
+
+.clickableCell{
+	cursor: pointer;
+}
+
+td, th{
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+
+.slider{
+	-webkit-appearance: none;
+	appearance: none;
+	height: 20px;
+	width: 100%;
+	background: #d3d3d3;
+	outline: none;
+	opacity: 0.7;
+	transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #2166ef; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #2166ef; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+.tags{
+	margin: 5px;
+	padding: 5px;
+	box-shadow: 2px 2px 2px #888;
+	border: 2px solid #4981c7;
+	background-color: #d0ebff;
+	color:#4981c7;
+	display: inline-block;
+}
+
+.tags:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+
+.rating{
+	font-size: 2em;
+}
+
+.ratingReview{
+	unicode-bidi: bidi-override;
+	direction: rtl;
+	text-align: left;
+	font-size: 2em;
+}
+
+.ratingReview > span{
+	display: inline-block;
+	position: relative;
+}
+
+.ratingReview > span:hover:before,
+.ratingReview > span:hover ~ span:before{
+	content: "\2605";
+	position: absolute;
+}
+
+#reviewBody{
+	resize: none;
+	width: 75%;
+	height: 100px;
+}

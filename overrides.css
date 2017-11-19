@@ -1,0 +1,363 @@
+/* header */
+html, body, .apimInnerContainer {
+  background-color: #fff;
+  color: #000;
+}
+a.active {
+  color: #1D8FEB !important;
+}
+#menu-bar a,
+#menu-bar a:hover,
+#menu-bar a:visited,
+#menu-bar a:focus,
+#menu-bar a:active,
+.nav .block-menu ul li a,
+.front #menu-bar a,
+.front #menu-bar a:hover,
+.front #menu-bar a:focus,
+.front #menu-bar a:link,
+.front #menu-bar a:visited,
+.front #menu-bar a:active {
+  color: #ffffff;
+}
+#menu-bar a:active,
+.front #menu-bar a:active {
+  color: #1d8feb !important;
+}
+.dropitmenu ul.dropit-submenu a {
+  color: #7a868e;
+}
+.dropitmenu ul.dropit-submenu a:hover {
+  background: #248fc1;
+  color: #fff;
+}
+a,
+a:visited,
+.portal .portalApi .testAPILink a,
+.portal .portalApi .testAPILink a:visited,
+a:hover,
+a:focus,
+a:active,
+.portal .portalApi .testAPILink a:hover,
+.portal .portalApi .testAPILink a:focus,
+.portal .portalApi .testAPILink a:active,
+h3.apimSummaryTitle,
+.breadcrumb a:hover,
+.breadcrumb a:focus,
+.breadcrumb a:active,
+#page > footer a:hover,
+#page > footer a:focus,
+#page > footer a:active,
+.apiPlanSummary .planSubscribe a,
+.apiPlanSummary .planSubscribe a:link,
+.apiPlanSummary .planSubscribe a:visited,
+.apimPlansApis .ui-accordion-header .testAPILink a,
+.apimPlansApis .ui-accordion-header .testAPILink a:link,
+.apimPlansApis .ui-accordion-header .testAPILink a:visited,
+.apiPlanSummary .planSubscribe a:hover,
+.apiPlanSummary .planSubscribe a:focus,
+.apiPlanSummary .planSubscribe a:active,
+.apimPlansApis .ui-accordion-header .testAPILink a:hover,
+.apimPlansApis .ui-accordion-header .testAPILink a:focus,
+.apimPlansApis .ui-accordion-header .testAPILink a:active {
+  color: #165eaf;
+}
+a.active {
+  color: #165eaf !important;
+}
+
+/* button color */
+button,
+input[type="submit"],
+input.form-submit,
+.form-actions a,
+.form-actions a:visited,
+.button, a.button, a.button:visited,
+.banner_block .banner_button a,
+.portal .migratePlanContainer .migrateButton a,
+.numberedList a,
+.supportList a {
+  background-color: #165eaf;
+  color: #fffeff;
+}
+
+.dropit-icon {
+  background-image: url(images/ui/ui-icons_ffffff_256x240.png);
+}
+
+.singleOrg {
+  color: #dbdee2;
+}
+
+/* navBar buttons */
+.nav .block-menu ul a:hover{
+        color: white;
+        background-color: #2166ef;
+	opacity: 1;
+}
+/* body of home page */
+body.page-home #columns.no-menu-bar {
+  background-color: #fff;
+}
+/* header of home page */
+#page > header {
+	background-color: white;
+	border-top: 8px solid white;
+}
+/* menu bar and border */
+#menu-bar {
+	background-color: #003399;
+	border-bottom: 0;
+}
+#menu-bar li{
+	margin-right: 0px !important;
+}
+.region-header a,
+#block-ibm-apim-developer-org-select > div > div.block-content.content.no-title > div{
+	color: black !important;
+}
+
+
+/*Search is poorly set so we try to center it in menu bar*/
+#edit-search-block-form--2{
+	margin-top: 4px;
+}
+
+..elipsis-names{
+	color: black;
+}
+
+/* border of the footer */
+#page > footer, #page > footer .block-title {
+  background-color: #fff;
+}
+
+.wrapper{
+	box-shadow: 2px 2px 2px #888;	
+}
+
+.wrapper:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+/* footer */
+#page > footer a {
+  color: #fff;
+}
+/* links */
+#skip-link a,
+ul.tabs li a,
+ul.tabs li a:visited {
+  color: #165eaf;
+  font-weight: bold;
+}
+.menu-depth-1 a:active{
+   color: d6dbfc;
+}
+ul.tabs li a:visited {
+/*  color: white; */
+  font-weight: bold;
+  font: 400 15px/1.8 "Lato", sans-serif;
+  margin: 0;
+}
+.leaf a.active {
+	color: white !important;
+	background-color: #2166ef;
+}
+/*
+.leaf a:hover{
+	color: white;
+	background-color: #2166ef;
+}
+*/
+.note{
+	box-shadow: 2px 2px 2px #888;
+	border: 2px solid #4981c7;
+	display: block;
+	max-width: 50%;
+	margin: 20px 20px 20px 20px;
+	font: 400 15px/1.8 "Lato", sans-serif;
+}
+
+.note:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+
+.notetitle{
+	font-weight: bold;
+	background-color: #d0ebff;
+	color:#4981c7;
+	padding: 20px 20px 20px 20px;
+}
+
+.notebody{
+	margin: 20px 20px;
+	color: #000;
+}
+
+.warning{
+	box-shadow: 2px 2px 2px #888;
+	border: 2px solid #f7dd73;
+	display: block;
+	max-width: 50%;
+	margin: auto;
+	margin: 20px 20px 20px 20px;
+	font: 400 15px/1.8 "Lato", sans-serif;
+}
+
+.warning:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+
+.warningtitle{
+	font-weight: bold;
+	background-color: #fff6c0;
+	color:#a59204;
+	padding: 20px 20px 20px 20px;
+}
+
+.warningbody{
+	margin: 20px 20px;
+	color: #000;
+}
+
+.important{
+	box-shadow: 2px 2px 2px #888;
+	border: 2px solid #ef0000;
+	display: inline-block;
+	max-width: 50%;
+	margin: auto;
+	margin: 20px 20px 20px 20px;
+	font: 400 15px/1.8 "Lato", sans-serif;
+}
+
+.important:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+
+.importanttitle{
+	font-weight: bold;
+	background-color: #fbaeae;
+	color:#bf0202;
+	padding: 20px 20px 20px 20px;
+}
+
+.importantbody{
+	margin: 20px 20px;
+	color: #000;
+}
+/* buttons */
+li > p > a, li > p > a:visited, .buttonLink, .buttonLink:visited, 
+.registerApp, .registerApp:visited, input.form-submit, input.form-submit:visited{
+	background-color: #4981c7;
+	border-radius: 4px;
+	border-color: #d0ebff;
+	border: 2px solid #4981c7;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
+	padding: 10px;
+	box-shadow: 0px 4px #888;
+	user-select: none;
+	-webkit-user-select: none; 
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+}
+
+.registerApp{
+	background-color: white;
+}
+
+li > p > a:hover, .buttonLink:hover, .registerApp:hover,
+input.form-submit:hover{
+	-webkit-transition-duration: .1s;
+	transition-duration: .1s;
+	background-color: #d0ebff;
+	border-radius: 4px;
+	border-color: #4981c7;
+	border: 2px solid #4981c7;
+	color: black !important;
+	box-shadow: 0px 4px #888;
+}
+
+li > p > a:active, .buttonLink:active, .registerApp:active,
+input.form-submit:active{
+	background-color: #d0ebff;
+	box-shadow: 0 1px #555;
+	transform: translateY(2px);
+}
+
+input.form-submit:disabled{
+	box-shadow: 0px 0px;
+	color: black;
+}
+
+.contentButton{
+	text-decoration: none;
+	-webkit-transition-duration: .4s;
+	transition-duration: .4s;
+	cursor: pointer;
+	padding: 10px;
+	display: inline-block;
+	vertical-align: center;
+	user-select: none;
+	-webkit-user-select: none; 
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+}
+
+.contentButton:hover{
+	background-color: #2166ef;
+	color: white;
+}
+
+.navButton{
+	user-select: none;
+	-webkit-user-select: none; 
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+	text-decoration: none;
+	-webkit-transition-duration: .4s;
+	transition-duration: .4s;
+	cursor: pointer;
+	padding: 10px;
+	display: inline-block;
+	color: white;
+	vertical-align: center;
+}
+
+.navButton:hover{
+	color: white;
+	background-color: #2166ef;
+}
+
+.topBar{
+	background-color: white;
+	height: 2em;
+}
+.navBar{
+	background-color: #003399;
+	height: 2em;
+}
+
+.footer{
+	background-color: #003399;
+	height: 2em;
+}
+
+.apimInnerContainer{
+	box-shadow: 2px 2px 2px #888;
+}
+
+.apimInnerContainer:hover{
+	box-shadow: 4px 4px 4px #888;
+}
+
+.forum-table-wrap, forum-statistics{
+	box-shadow: 2px 2px 2px #888;
+}
+/* Bottom Links */
+#page > footer a, #page > footer a:hover, #page > footer a:visited{
+	color: white;
+}
+
