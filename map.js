@@ -1,3 +1,4 @@
+//Load map
 var map
 function init() {
 	var styledMapType = new google.maps.StyledMapType(
@@ -306,6 +307,7 @@ for (var i=0; i<options.length; i++){
 	tagSelector.appendChild(opt);
 }
 
+//Change tabs
 function openTab(tabName){
 	var i;
 	var x=document.getElementsByClassName("tabBody");
@@ -315,18 +317,25 @@ function openTab(tabName){
 	document.getElementById(tabName).style.display="block";
 }
 
+//Slider value
 var slider = document.getElementById("mileRange");
 var miles = document.getElementById("miles");
 slider.oninput = function(){
 	miles.innerHTML=this.value;
 }
 
+//Search for restaurants
 var address = document.getElementById("searchBar");
+var priceFilter = document.getElementById("priceFilter");
+var ratingFilter = document.getElementById("ratingFilter");
 var resultsTable = document.getElementById("searchResults");
 var i=1;
 function search(){
 	console.log(address.value);
 	console.log(slider.value);
+	console.log(priceFilter.value);
+	console.log(ratingFilter.value);
+	resultsTable.style.display="inline-block";
 	var row = resultsTable.insertRow(i);
 	var cell1 = row.insertCell(0);
 	var cell2 = row.insertCell(1);
@@ -342,6 +351,7 @@ function search(){
 	i++;
 }
 
+//Sort the results table
 function sort(n){
   var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
   switching = true;
@@ -419,6 +429,7 @@ function addMarker(){
 	});
 }
 
+//Load restaurant in info area
 function getRestaurant(){
 	//Retrieve information from server and input here
 	var restaurantName=document.getElementById("restaurantName");
@@ -435,6 +446,34 @@ function getRestaurant(){
 	}
 	openTab('info');
 }
+
+//Update my restaurant page
+var myRestaurantName=document.getElementById("myRestaurantName");
+var myName=document.getElementById("myName");
+var myPrice=document.getElementById("myPrice");
+var myRatingStars=document.getElementById("myRatingStars");
+var myDescription=document.getElementById("myDescription");
+function myRestaurant(){
+	//Get information and populate
+}
+
+//Update edit restaurant page
+var editMyRestaurantName=document.getElementById("editMyRestaurantName");
+var editMyDescription=document.getElementById("editMyDescription");
+function editRestaurant(){
+	openTab('editInfo')
+	editMyRestaurantName.value=myRestaurantName.innerHTML;
+	editMyDescription.value=myDescription.innerHTML;
+}
+
+//submit edit
+function submitEdit(){
+	console.log(editMyRestaurantName.value);
+	console.log(editMyDescription.value);
+	openTab('myInfo');
+}
+
+//Rating
 var ratingSubmit;
 function rate(amount){
 	console.log(amount);
@@ -449,5 +488,13 @@ function rate(amount){
 	}
 	ratingSubmit=parseInt(amount);
 	console.log(ratingSubmit);
+}
+
+//Grab the inputs and submit review
+var reviewBody = document.getElementById("reviewBody");
+function submitReview(){
+	console.log(tagSelector.value);
+	console.log(ratingSubmit);
+	console.log(reviewBody.value);
 }
 //src=https://googlemaps.github.io/js-map-label/examples/maplabel.html

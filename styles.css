@@ -1,7 +1,24 @@
+body{
+	margin: 0;
+	height: 100%;
+	background-image: url("triangles1.png");
+	font-family: "Helvetica";
+	overflow: hidden;
+}
+
 .navBar{
 	list-style: none;
-	background-color: #003399;
+	background-color: #1d2c4d;
 	overflow: auto;
+}
+
+#appName{
+	padding: 25px 20px 20px 20px;
+	background-color: #22355b;
+	font-family: "Helvetica";
+	color: white;
+	font-size: 2em;
+	font-weight: bold;
 }
 
 .navButton{
@@ -29,6 +46,15 @@
 	float: left;
 	width: 30%;
 	padding: 10px;
+	height: 83vh;
+}
+
+#leftColumn{
+	border-right: 1px solid;
+}
+
+#info, .tabBody{
+	height: 100%;
 }
 
 .row:after{
@@ -39,6 +65,16 @@
 
 #searchBar{
 	width: 100%;
+	padding: 10px 0px 10px 0px;
+	margin: 15px 0px 15px 0px;
+}
+
+#rangeContainer{
+	margin: 0px 0px 15px 0px;
+}
+
+#search{
+	margin: 10px 0px 10px 0px;
 }
 
 table{
