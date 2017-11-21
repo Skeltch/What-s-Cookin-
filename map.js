@@ -299,18 +299,20 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga
 
 var options=["Fast","Spicy","Salty","Sweet","Sour","Great Value", "Vegetarian", "Peanut Free", "WiFi",
 			"Accommodating", "Good Ambiance", "Parking", "Kid Friendly", "Pets allowed"];
-var tagSelector = document.getElementById("tagSelector");
+var tagSelector = $("#tagSelector");
+var tagFilter = $("#tagFilter");
 for (var i=0; i<options.length; i++){
-	var opt = document.createElement("option");
-	opt.value=options[i];
-	opt.innerHTML=options[i];
-	tagSelector.appendChild(opt);
+	var opt = $("<option value="+options[i]+">"+options[i]+"</option>");
+	//opt.value=options[i];
+	//opt.innerHTML=options[i];
+	tagFilter.append(opt);
+	tagSelector.append(opt.clone());
 }
 
 //Change tabs
 function openTab(tabName){
 	var i;
-	var x=document.getElementsByClassName("tabBody");
+	var x=$(".tabBody");
 	for( i=0; i<x.length; i++){
 		x[i].style.display="none";
 	}
@@ -318,23 +320,30 @@ function openTab(tabName){
 }
 
 //Slider value
-var slider = document.getElementById("mileRange");
-var miles = document.getElementById("miles");
+var slider = $("#mileRange");
+var miles = $("#miles");
 slider.oninput = function(){
 	miles.innerHTML=this.value;
 }
 
 //Search for restaurants
-var address = document.getElementById("searchBar");
-var priceFilter = document.getElementById("priceFilter");
-var ratingFilter = document.getElementById("ratingFilter");
+var address = $("#searchBar");
+var priceFilter = $("#priceFilter");
+var ratingFilter = $("#ratingFilter");
+var tagFilter = $("#tagFilter");
 var resultsTable = document.getElementById("searchResults");
-var i=1;
 function search(){
-	console.log(address.value);
-	console.log(slider.value);
-	console.log(priceFilter.value);
-	console.log(ratingFilter.value);
+	var i=1;
+	var rows = resultsTable.childNodes[1];
+	while(rows.childNodes.length>2){
+		rows.removeChild(rows.lastChild);
+	}
+	console.log(address.val());
+	console.log(slider.val());
+	console.log(priceFilter.val());
+	console.log(ratingFilter.val());
+	console.log(tagFilter.val());
+
 	resultsTable.style.display="inline-block";
 	var row = resultsTable.insertRow(i);
 	var cell1 = row.insertCell(0);
@@ -432,44 +441,44 @@ function addMarker(){
 //Load restaurant in info area
 function getRestaurant(){
 	//Retrieve information from server and input here
-	var restaurantName=document.getElementById("restaurantName");
-	var ownerName=document.getElementById("ownerName");
-	var ratingStars=document.getElementsByClassName("ratingStars");
-	restaurantName.innerHTML="Changed";
-	ownerName.innerHTML="Changed";	
+	var restaurantName=$("#restaurantName");
+	var ownerName=$("#ownerName");
+	var ratingStars=$(".ratingStars");
+	restaurantName.html("Changed");
+	ownerName.html("Changed");	
 	//Testing the rating
 	for( i=0; i<ratingStars.length; i++){
-		ratingStars[i].innerHTML="\u2606";
+		ratingStars.eq(i).html("\u2606");
 	}
 	for( i=0; i<parseInt(3); i++){
-		ratingStars[i].innerHTML="\u2605";
+		ratingStars.eq(i).html("\u2605");
 	}
 	openTab('info');
 }
 
 //Update my restaurant page
-var myRestaurantName=document.getElementById("myRestaurantName");
-var myName=document.getElementById("myName");
-var myPrice=document.getElementById("myPrice");
-var myRatingStars=document.getElementById("myRatingStars");
-var myDescription=document.getElementById("myDescription");
+var myRestaurantName=$("#myRestaurantName");
+var myName=$("#myName");
+var myPrice=$("#myPrice");
+var myRatingStars=$("#myRatingStars");
+var myDescription=$("#myDescription");
 function myRestaurant(){
 	//Get information and populate
 }
 
 //Update edit restaurant page
-var editMyRestaurantName=document.getElementById("editMyRestaurantName");
-var editMyDescription=document.getElementById("editMyDescription");
+var editMyRestaurantName=$("#editMyRestaurantName");
+var editMyDescription=$("#editMyDescription");
 function editRestaurant(){
 	openTab('editInfo')
-	editMyRestaurantName.value=myRestaurantName.innerHTML;
-	editMyDescription.value=myDescription.innerHTML;
+	editMyRestaurantName.val(myRestaurantName.html());
+	editMyDescription.val(myDescription.html());
 }
 
 //submit edit
 function submitEdit(){
-	console.log(editMyRestaurantName.value);
-	console.log(editMyDescription.value);
+	console.log(editMyRestaurantName.val());
+	console.log(editMyDescription.val());
 	openTab('myInfo');
 }
 
@@ -477,24 +486,53 @@ function submitEdit(){
 var ratingSubmit;
 function rate(amount){
 	console.log(amount);
-	var ratingStars=document.getElementsByClassName("ratingStars");
-	var reviewStars=document.getElementsByClassName("stars");
+	var ratingStars=$(".ratingStars");
+	var reviewStars=$(".stars");
 	for( i=0; i<reviewStars.length; i++){
-		reviewStars[i].innerHTML="\u2606";
+		reviewStars.eq(i).html("\u2606");
 	}
 	
 	for( i=reviewStars.length-1; i>=reviewStars.length-parseInt(amount); i--){
-		reviewStars[i].innerHTML="\u2605";
+		reviewStars.eq(i).html("\u2605");
 	}
 	ratingSubmit=parseInt(amount);
 	console.log(ratingSubmit);
 }
 
 //Grab the inputs and submit review
-var reviewBody = document.getElementById("reviewBody");
+var reviewBody = $("#reviewBody");
 function submitReview(){
-	console.log(tagSelector.value);
+	console.log(tagSelector.val());
+	console.log($("#priceSelector").val());
 	console.log(ratingSubmit);
-	console.log(reviewBody.value);
+	console.log(reviewBody.val());
 }
+
+var myTransactions = document.getElementById("myTransactionsTable");
+function loadTransactions(){
+	var i=1;
+	/*
+	var rows = myTransactions.childNodes[1];
+	console.log(rows.childNodes.length);
+	while(rows.childNodes.length>2){
+		rows.removeChild(rows.lastChild);
+	}
+	*/
+	var row = myTransactions.insertRow(i);
+	var cell1 = row.insertCell(0);
+	var cell2 = row.insertCell(1);
+	var cell3 = row.insertCell(2);
+	var cell4 = row.insertCell(3);
+
+	cell1.innerHTML="CName"+i;
+	cell2.innerHTML="RName"+i;
+	cell3.innerHTML="Date"+i;
+	cell4.innerHTML="Price"+i;
+	cell1.className="clickableCell";
+	cell1.addEventListener('click', function(){
+		getRestaurant();
+	});
+	i++;
+}
+
 //src=https://googlemaps.github.io/js-map-label/examples/maplabel.html

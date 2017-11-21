@@ -6,16 +6,17 @@
 	<link rel="stylesheet" href="styles.css">
     <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script src="maplabel-compiled.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <title>What's Cookin'</title>
   </head>
   <body>
-	<div id="appName">What's Cookin'
-	</div>
+	<div id="appName">What's Cookin'</div>
     <div id="map" style="width: 500px; height: 89vh; float: left"></div>
 	<div class="infoArea">
 		<li class="navBar">
 			<a class="navButton" onclick="openTab('info')">Info</a><!--
-			--><a class="navButton" onclick="openTab('myInfo')">My Restaurant</a>
+			--><a class="navButton" onclick="openTab('myInfo')">My Restaurant</a><!--
+			--><a class="navButton" onclick="openTab('myTransactions')">Transactions</a>
 		</li>
 		<div id="info" class="tabBody">
 			<div id="leftColumn" class="column">
@@ -45,6 +46,12 @@
 						<option value="3">>3</option>
 						<option value="4">>4</option>
 						
+					</select>
+				</div>
+				<div>
+					Tag Filter:
+					<select id="tagFilter" multiple>
+						<option value="*">Any</option>
 					</select>
 				</div>
 				<div>
@@ -102,10 +109,18 @@
 				Fast,Spicy,Salty,Sweet,Sour,Great Value, Vegetarian, Peanut Free, WiFi,
 				Accommodating, Good Ambiance, Parking, Kid Friendly, Pets allowed
 				-->
+				<div>
+				Price:
+					<select id="priceSelector">
+						<option value="1">$</option>
+						<option value="2">$$</option>
+						<option value="3">$$$</option>
+					</select>
+				</div>
 				<div style="margin: 10px 0px 10px 0px;">
 				Tag:
 					<select id="tagSelector">
-						<option value=""></option>
+						<option value="*">Any</option>
 					</select>
 				</div>
 				Review:
@@ -116,8 +131,7 @@
 			</div>
 		</div>
 		<div id="myInfo" class="tabBody" style="display: none">
-			<button id="editButton" onclick="editRestaurant()">Edit Restaurant</button>
-			<h1 id="myRestaurantName">My Restaurant Name</h1>
+			<h1 id="myRestaurantName" style="margin-top: 0px">My Restaurant Name</h1>
 			<h3 id="myName">My Name</h3>
 			<h4 id="myPrice">$$$</h4>
 			<div class="rating">
@@ -128,14 +142,28 @@
 				--><span class="myRatingStars">&star;</span>
 			</div>
 			<p id="myDescription">My Description</p>
+			<button id="editButton" onclick="editRestaurant()">Edit Restaurant</button>
 		</div>
 		<div id="editInfo" class="tabBody" style="display: none">
-			<h1>Restaurant Name:</h1>
+			<h1 style="margin-top: 0px">Restaurant Name:</h1>
 			<input id="editMyRestaurantName"></input>
 			<h3>My Description:</h3>
 			<input id="editMyDescription"></input>
 			<div>
 				<button id="submitEdit" onclick="submitEdit()">Submit</button>
+			</div>
+		</div>
+		<div id="myTransactions" class="tabBody" style="display: none">
+			<button onclick="loadTransactions()">Load</button>
+			<div style="overflow:auto; height:83vh;">
+				<table id="myTransactionsTable">
+					<tr class="columnHeader">
+						<th onclick="sort(0)">Customer Name</th>
+						<th onclick="sort(1)">Restaurant Name</th>
+						<th onclick="sort(2)">Date</th>
+						<th onclick="sort(3)">Price</th>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>
