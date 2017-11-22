@@ -545,6 +545,7 @@ function myRestaurant(){
 		contentType: "application/json",
 		dataType: "json",
 		success: function(response){
+			console.log(response);
 			myRestaurantName.html(response[0].name);
 			myName.html(response[0].id);
 			var stars="";
@@ -591,21 +592,41 @@ function deleteRestaurant(){
 		type: "GET",
 		contentType: "application/json",
 		dataType: "json",
+		success: function(response){
+			console.log(response);
+			userId=0;
+			myRestaurant();
+		},
+		error: function(response){
+			console.log(response);
+			userId=0;
+			myRestaurant();
+		}
 	});
 }
 
 //submit edit
 function submitEdit(){
 	$.ajax({
-		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/edit_rest_desc.php",
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/edit_rest_desc.php?CUST_ID="+userId+"&DESC="+editMyDescription.val(),
+		/*
 		data: {
 			CUST_ID: userId,
 			DESC: editMyDescription.val()
 		},
-		type: "POST"
+		type: "POST",
+		*/
+		success: function(response){
+			console.log(response);
+			myRestaurant();
+		},
+		error: function(response){
+			console.log(response);
+			myRestaurant();
+		}
 	});
 	console.log(editMyDescription.val());
-	openTab('myInfo');
+	//openTab('myInfo');
 }
 
 //Rating
