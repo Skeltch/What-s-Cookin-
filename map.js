@@ -373,17 +373,16 @@ function search(){
 		console.log(inputLat);
 		console.log(inputLng);
 		$.ajax({
-			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
 			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?lat="+inputLat+"&long="+inputLng+"&radius="+slider.value+"&rating="+ratingFilter.val()+"&price="+priceFilter.val()+"&tag="+tagFilter.val(),
 			type: "GET",
 			contentType: "application/json",
 			dataType: "json",
 			success: function(response){
-				console.log(response);
 				data = response;
-				for(var j=1; j<data.length; j++){
+				console.log(response);
+				for(var j=0; j<data.length; j++){
 					resultsTable.style.display="inline-block";
-					var row = resultsTable.insertRow(j);
+					var row = resultsTable.insertRow(j+1);
 					var cell1 = row.insertCell(0);
 					cell1.id=j;
 					var cell2 = row.insertCell(1);
@@ -410,16 +409,6 @@ function search(){
 			}
 		});
 	});
-	/*
-	console.log(address.val());
-	console.log(inputLat);
-	console.log(inputLng);
-	console.log(slider.value);
-	console.log(priceFilter.val());
-	console.log(ratingFilter.val());
-	console.log(tagFilter.val());
-	*/
-	
 }
 
 //Sort the results table
@@ -478,9 +467,7 @@ function sort(n){
 }
 
 function addMarker(lat, lng, label, index){
-//function addMarker(){
 	var loc = new google.maps.LatLng(lat,lng);
-	//var loc = new google.maps.LatLng(40.40, -74.434);
 	marker = new google.maps.Marker({
 		position: loc,
 		map: map 
@@ -497,9 +484,7 @@ function addMarker(lat, lng, label, index){
 	marker.addListener('click', function(){
 		curRestaurant=this.id;
 		map.setCenter(marker.getPosition());
-		//Call with id of the resturant
 		getRestaurant(data[this.id]);
-		//getRestaurant(data[index]);
 		
 	});
 	markers.push(marker);
@@ -522,9 +507,6 @@ function getRestaurant(index){
 	var restaurantName=$("#restaurantName");
 	var ownerName=$("#ownerName");
 	var ratingStars=$(".ratingStars");
-	//restaurantName.html(restaurantData.name);
-	//restaurantName.html(restaurantData.ownerName);
-	//var numStars=parseInt(restaurantData.rating);
 	restaurantName.html(data[index].name);
 	ownerName.html(data[index].id);	
 	var dollarText="";
@@ -532,7 +514,6 @@ function getRestaurant(index){
 		dollarText+="$";
 	}
 	$("#price").html(dollarText);
-	console.log(data[index]);
 	$("#tagsDiv").html('');
 	for( i=0; i<data[index].tags.length; i++){
 		$("#tagsDiv").append("<span class='tags'>"+data[index].tags[i]+"</span>");
@@ -552,52 +533,79 @@ function getRestaurant(index){
 var myRestaurantName=$("#myRestaurantName");
 var myName=$("#myName");
 var myPrice=$("#myPrice");
-var myRatingStars=$("#myRatingStars");
+var myRatingStars=$(".rating");
 var myDescription=$("#myDescription");
+var myTags=$("#myTags");
 function myRestaurant(){
-	//Get information and populate
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		/*
-		var myData = JSON.parse(request.responseText);
-		myRestaurantName.html(myData.name);
-		myName.html(myData.ownerName);
-		myPrice.html(myData.price);
-		myRatingStars.html(myData.rating);
-		myDescription.html(myData.description);
-		*/
-	};
-	request.send();
+	openTab('myInfo')
+	$.ajax({
+		//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_rest_info.php?CUST_ID="+userId,
+		type: "GET",
+		contentType: "application/json",
+		dataType: "json",
+		success: function(response){
+			myRestaurantName.html(response[0].name);
+			myName.html(response[0].id);
+			var stars="";
+			for(var j=0; j<5; j++){
+				if(j<parseInt(response[0].rating)){
+					stars+="\u2605";
+				}
+				else{
+					stars+="\u2606";
+				}
+			}
+			var priceString="";
+			for(j=0; j<parseInt(response[0].price); j++){
+				priceString+="$";
+			}
+			myRatingStars.html(stars);
+			myPrice.html(priceString);
+			myDescription.html(response[0].desc);
+		},
+		error: function(response){
+			console.log(response);
+		}
+	});
 }
 
 var userId=1
 function setUser(id){
 	userId=parseInt(id);
+	console.log(userId);
 }
 
 //Update edit restaurant page
 var editMyRestaurantName=$("#editMyRestaurantName");
 var editMyDescription=$("#editMyDescription");
 function editRestaurant(){
-	openTab('editInfo')
-	editMyRestaurantName.val(myRestaurantName.html());
+	openTab('editInfo');
 	editMyDescription.val(myDescription.html());
 }
 
 function deleteRestaurant(){
 	//delete restaurant with userId
+	$.ajax({
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_rest_info.php?CUST_ID="+userId,
+		type: "GET",
+		contentType: "application/json",
+		dataType: "json",
+	});
 }
 
 //submit edit
 function submitEdit(){
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		
-	};
-	request.send();
-	console.log(editMyRestaurantName.val());
+	$.ajax({
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_rest_info.php",
+		data: {
+			CUST_ID: userId,
+			DESC: editMyDescription.val()
+		},
+		type: "POST",
+		contentType: "application/json",
+		dataType: "json",
+	});
 	console.log(editMyDescription.val());
 	openTab('myInfo');
 }
@@ -605,7 +613,6 @@ function submitEdit(){
 //Rating
 var ratingSubmit;
 function rate(amount){
-	console.log(amount);
 	var ratingStars=$(".ratingStars");
 	var reviewStars=$(".stars");
 	for( i=0; i<reviewStars.length; i++){
@@ -616,102 +623,100 @@ function rate(amount){
 		reviewStars.eq(i).html("\u2605");
 	}
 	ratingSubmit=parseInt(amount);
-	console.log(ratingSubmit);
 }
 
 //Grab the inputs and submit review
 var reviewBody = $("#reviewBody");
 function submitReview(){
-	console.log(tagSelector.val());
-	console.log($("#priceSelector").val());
-	console.log(ratingSubmit);
-	console.log(reviewBody.val());
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		
-	};
-	request.send();
+	$.ajax({
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/insert_review.php",
+		data: {
+			REST_ID: curRestaurant,
+			CUST_ID: userId,
+			RATING: ratingSubmit,
+			PRICE: $("#priceSelector").val(),
+			DESCRIPTION: reviewBody.val(),
+			TAG: tagSelector.val()
+		},
+		type: "POST",
+		success: function(response){
+			console.log(response);
+		}
+	});
 }
 
 var myTransactions = document.getElementById("myTransactionsTable");
 function loadTransactions(){
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		var transactions = JSON.parse(request.responseText);
-		var row = myTransactions.insertRow(i);
-		var cell1 = row.insertCell(0);
-		var cell2 = row.insertCell(1);
-		var cell3 = row.insertCell(2);
-		var cell4 = row.insertCell(3);
-
-		cell1.innerHTML=transactions.cName;
-		cell2.innerHTML=transactions.rName;
-		cell3.innerHTML=transactions.date;
-		cell4.innerHTML=transactions.price;
-		cell1.className="clickableCell";
-		cell1.addEventListener('click', function(){
-			searchRestaurant(transactions.rName);
-		});
-		i++;
-	};
-	request.send();
-	var i=1;
-	/*
 	var rows = myTransactions.childNodes[1];
-	console.log(rows.childNodes.length);
 	while(rows.childNodes.length>2){
 		rows.removeChild(rows.lastChild);
 	}
-	*/
-
-}
-
-function openReviews(){
+	openTab('myTransactions')
 	$.ajax({
-			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
-			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_reviews.php?REST_ID="+curRestaurant,
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_transactions.php?CUST_ID="+userId,
 			type: "GET",
 			contentType: "application/json",
 			dataType: "json",
 			success: function(response){
+				var transactions = response;
+				for(var i=0; i<transactions.length; i++){
+					var row = myTransactions.insertRow(i+1);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					var cell3 = row.insertCell(2);
+					var cell4 = row.insertCell(3);
+
+					cell1.innerHTML=transactions[i].cust_id;
+					cell2.innerHTML=transactions[i].rest_name;
+					cell3.innerHTML=transactions[i].date;
+					cell4.innerHTML=transactions[i].price;
+				}
+			},
+			error: function(response){
 				console.log(response);
-				data = response;
 			}
 	});
-	/*
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		openTab('reviews');
-		var reviewDiv = $("#reviewDiv");
-		var reviewData = JSON.parse(request.responseText);
-		for(var i=0; i<reviewData.length; i++){
-			console.log(reviewData.length);
-			var stars="";
-			for(var j=0; j<5; j++){
-				if(j<3){
-					stars+="\u2605";
+
+}
+
+function openReviews(){
+	$("#reviewDiv").html('');
+	$.ajax({
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_reviews.php?REST_ID="+curRestaurant,
+			type: "GET",
+			contentType: "application/json",
+			dataType: "text",
+			success: function(response){
+				console.log(response);
+				openTab('reviews');
+				var reviewDiv = $("#reviewDiv");
+				var reviewData = JSON.parse(response);
+				for(var i=0; i<reviewData.length; i++){
+					var stars="";
+					for(var j=0; j<5; j++){
+						if(j<parseInt(reviewData[i].rating)){
+							stars+="\u2605";
+						}
+						else{
+							stars+="\u2606";
+						}
+					}
+					var priceString="";
+					for(j=0; j<parseInt(reviewData[i].price); j++){
+						priceString+="$";
+					}
+					var name="Name";
+					reviewDiv.append("<h4>"+reviewData[i].cust_id+"</h4>");
+					reviewDiv.append("<div">priceString+"</div>");
+					reviewDiv.append("<div>"+stars+"</div>");
+					reviewDiv.append("<div class=\"tags\">"+reviewData[i].tag+"</div>");
+					reviewDiv.append("<div>"+reviewData[i].description+"</div>");
 				}
-				else{
-					stars+="\u2606";
-				}
-			}
-			var priceString="";
-			for(j=0; j<reviewData.tags.length; j++){
-				priceString+="$";
-			}
-			var name="Name";
-			reviewDiv.append("<h4>"+name+"</h4>");
-			reviewDIv.append("<div">priceString+"</div>");
-			reviewDiv.append("<div>"+stars+"</div>");
-			reviewDiv.append("<div class=\"tags\">"+"tag"+"</div>");
-			reviewDiv.append("<div>"+"reviewDescription"+"</div>");
-		}
-	};
-	request.send();
-	*/
+			},
+			error: function(response){
+				console.log(response);
+			}	
+	});
 }
 
 //src=https://googlemaps.github.io/js-map-label/examples/maplabel.html
