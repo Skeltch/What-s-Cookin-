@@ -351,6 +351,8 @@ var tagFilter = $("#tagFilter");
 var resultsTable = document.getElementById("searchResults");
 var data;
 function search(){
+	QueryRestaurants()
+	
 	var inputLat, inputLng;
 	var client = new HttpClient();
 		client.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address.val()+'&key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE', function(response){
@@ -367,13 +369,14 @@ function search(){
 		console.log(searchJSON);
 		$.ajax({
 			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
-			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php",
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?parameters="+searchJSON,
+			//url: "../QueryRestaurants.php",
 			type: "GET",
 			contentType: "application/json",
 			dataType: "json",
 			success: function(response){
-				console.log(request.responseText);
-				data = JSON.parse(request.responseText);
+				console.log(response);
+				data = JSON.parse(response);
 				for(var j=0; j<data.length; j++){
 					resultsTable.style.display="inline-block";
 					var row = resultsTable.insertRow(i);
@@ -392,6 +395,7 @@ function search(){
 			}
 		});
 	});
+	
 	/*
 	console.log(address.val());
 	console.log(slider.val());
