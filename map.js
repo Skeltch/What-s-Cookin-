@@ -587,7 +587,7 @@ function editRestaurant(){
 function deleteRestaurant(){
 	//delete restaurant with userId
 	$.ajax({
-		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_rest_info.php?CUST_ID="+userId,
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/delete_user.php?CUST_ID="+userId,
 		type: "GET",
 		contentType: "application/json",
 		dataType: "json",
@@ -597,14 +597,12 @@ function deleteRestaurant(){
 //submit edit
 function submitEdit(){
 	$.ajax({
-		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_rest_info.php",
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/edit_rest_desc.php",
 		data: {
 			CUST_ID: userId,
 			DESC: editMyDescription.val()
 		},
-		type: "POST",
-		contentType: "application/json",
-		dataType: "json",
+		type: "POST"
 	});
 	console.log(editMyDescription.val());
 	openTab('myInfo');
