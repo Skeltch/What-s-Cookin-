@@ -320,10 +320,10 @@ function openTab(tabName){
 }
 
 //Slider value
-var slider = $("#mileRange");
+var slider = document.getElementById("mileRange");
 var miles = $("#miles");
 slider.oninput = function(){
-	miles.innerHTML=this.value;
+	miles.html(this.value);
 }
 
 var HttpClient = function() {
@@ -344,65 +344,82 @@ var HttpClient = function() {
 }
 
 //Search for restaurants
+markers=[]
+labels=[]
 var address = $("#searchBar");
 var priceFilter = $("#priceFilter");
 var ratingFilter = $("#ratingFilter");
 var tagFilter = $("#tagFilter");
 var resultsTable = document.getElementById("searchResults");
 var data;
+var curRestaurant=1;
 function search(){
-	QueryRestaurants()
-	
+	for(var i=0; i<markers.length; i++){
+		markers[i].setMap(null);
+		labels[i].setMap(null);
+	}
+	markers=[];
+	labels=[]
+	var rows = resultsTable.childNodes[1];
+	while(rows.childNodes.length>2){
+		rows.removeChild(rows.lastChild);
+	}
 	var inputLat, inputLng;
 	var client = new HttpClient();
 		client.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address.val()+'&key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE', function(response){
-		//console.log(response);
+		console.log(response);
 		inputLat = JSON.parse(response).results[0].geometry.location.lat;
-		inputLng = JSON.parse(response).results[0].geometry.location.lng;
-		var searchJSON=JSON.stringify({
-			lat:inputLat, 
-			lng:inputLng, 
-			miles: slider.val(),
-			price: priceFilter.val(),
-			tags: tagFilter.val(),
-		})
-		console.log(searchJSON);
+		inputLng = JSON.parse(response).results[0].geometry.location.lng;	
+		console.log(inputLat);
+		console.log(inputLng);
 		$.ajax({
 			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
-			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?parameters="+searchJSON,
-			//url: "../QueryRestaurants.php",
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?lat="+inputLat+"&long="+inputLng+"&radius="+slider.value+"&rating="+ratingFilter.val()+"&price="+priceFilter.val()+"&tag="+tagFilter.val(),
 			type: "GET",
 			contentType: "application/json",
 			dataType: "json",
 			success: function(response){
 				console.log(response);
-				data = JSON.parse(response);
-				for(var j=0; j<data.length; j++){
+				data = response;
+				for(var j=1; j<data.length; j++){
 					resultsTable.style.display="inline-block";
-					var row = resultsTable.insertRow(i);
+					var row = resultsTable.insertRow(j);
 					var cell1 = row.insertCell(0);
+					cell1.id=j;
 					var cell2 = row.insertCell(1);
 					var cell3 = row.insertCell(2);
-					cell1.innerHTML=data[i].name;
-					cell2.innerHTML=data[i].price;
-					cell3.innerHTML=data[i].rating;
+					cell1.innerHTML=data[j].name;
+					cell2.innerHTML=data[j].price;
+					cell3.innerHTML=data[j].rating;
+					addMarker(data[j].lat, data[j].long, data[j].name, j);
 					cell1.className="clickableCell";
-					cell1.addEventListener('click', function(){
-						addMarker();
+					var loc=new google.maps.LatLng(data[j].lat,data[j].lng)
+					var restaurantData=data[j]
+					cell1.addEventListener('click', function(e){
+						curRestaurant=this.id;
+						map.setCenter(new google.maps.LatLng(data[this.id].lat, data[this.id].long));
+						//Call with id of the resturant
+						getRestaurant(this.id);
+						//getRestaurant(data[index]);
 					});
-					i++;
 				}
+			},
+			error: function(response){
+				console.log("ERROR");
+				console.log(response.responseText);
 			}
 		});
 	});
-	
 	/*
 	console.log(address.val());
-	console.log(slider.val());
+	console.log(inputLat);
+	console.log(inputLng);
+	console.log(slider.value);
 	console.log(priceFilter.val());
 	console.log(ratingFilter.val());
 	console.log(tagFilter.val());
 	*/
+	
 }
 
 //Sort the results table
@@ -460,17 +477,17 @@ function sort(n){
   }
 }
 
-//function addMarker(lat, lng, label, index){
-function addMarker(){
-	//var loc = new google.maps.LatLng(lat,lng);
-	var loc = new google.maps.LatLng(40.40, -74.434);
+function addMarker(lat, lng, label, index){
+//function addMarker(){
+	var loc = new google.maps.LatLng(lat,lng);
+	//var loc = new google.maps.LatLng(40.40, -74.434);
 	marker = new google.maps.Marker({
 		position: loc,
 		map: map 
 	});
 	var mapLabel = new MapLabel({
-	  //text: label
-	  text: 'Home',
+	  text: label,
+	  //text: 'Home',
 	  position: loc,
 	  map: map,
 	  fontSize: 12,
@@ -478,12 +495,16 @@ function addMarker(){
 	});
 	mapLabel.set('position', loc);
 	marker.addListener('click', function(){
+		curRestaurant=this.id;
 		map.setCenter(marker.getPosition());
 		//Call with id of the resturant
-		getRestaurant();
+		getRestaurant(data[this.id]);
 		//getRestaurant(data[index]);
 		
 	});
+	markers.push(marker);
+	labels.push(mapLabel);
+	return marker;
 }
 
 function searchRestaurant(name){
@@ -496,8 +517,7 @@ function searchRestaurant(name){
 }
 
 //Load restaurant in info area
-//function getRestaurant(restaurantData){
-function getRestaurant(){
+function getRestaurant(index){
 	//Retrieve information from server and input here
 	var restaurantName=$("#restaurantName");
 	var ownerName=$("#ownerName");
@@ -505,15 +525,26 @@ function getRestaurant(){
 	//restaurantName.html(restaurantData.name);
 	//restaurantName.html(restaurantData.ownerName);
 	//var numStars=parseInt(restaurantData.rating);
-	restaurantName.html("Changed");
-	ownerName.html("Changed");	
+	restaurantName.html(data[index].name);
+	ownerName.html(data[index].id);	
+	var dollarText="";
+	for(var i=0; i<data[index].price; i++){
+		dollarText+="$";
+	}
+	$("#price").html(dollarText);
+	console.log(data[index]);
+	$("#tagsDiv").html('');
+	for( i=0; i<data[index].tags.length; i++){
+		$("#tagsDiv").append("<span class='tags'>"+data[index].tags[i]+"</span>");
+	}
 	//Testing the rating
 	for( i=0; i<ratingStars.length; i++){
 		ratingStars.eq(i).html("\u2606");
 	}
-	for( i=0; i<parseInt(3); i++){
+	for( i=0; i<parseInt(data[index].rating); i++){
 		ratingStars.eq(i).html("\u2605");
 	}
+	$("#restaurantDescription").html(data[index].desc);
 	openTab('info');
 }
 
@@ -540,6 +571,11 @@ function myRestaurant(){
 	request.send();
 }
 
+var userId=1
+function setUser(id){
+	userId=parseInt(id);
+}
+
 //Update edit restaurant page
 var editMyRestaurantName=$("#editMyRestaurantName");
 var editMyDescription=$("#editMyDescription");
@@ -547,6 +583,10 @@ function editRestaurant(){
 	openTab('editInfo')
 	editMyRestaurantName.val(myRestaurantName.html());
 	editMyDescription.val(myDescription.html());
+}
+
+function deleteRestaurant(){
+	//delete restaurant with userId
 }
 
 //submit edit
@@ -629,6 +669,18 @@ function loadTransactions(){
 }
 
 function openReviews(){
+	$.ajax({
+			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_reviews.php?REST_ID="+curRestaurant,
+			type: "GET",
+			contentType: "application/json",
+			dataType: "json",
+			success: function(response){
+				console.log(response);
+				data = response;
+			}
+	});
+	/*
 	var request = new XMLHttpRequest();
 	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
 	request.onload = function(){
@@ -646,14 +698,20 @@ function openReviews(){
 					stars+="\u2606";
 				}
 			}
+			var priceString="";
+			for(j=0; j<reviewData.tags.length; j++){
+				priceString+="$";
+			}
 			var name="Name";
 			reviewDiv.append("<h4>"+name+"</h4>");
+			reviewDIv.append("<div">priceString+"</div>");
 			reviewDiv.append("<div>"+stars+"</div>");
 			reviewDiv.append("<div class=\"tags\">"+"tag"+"</div>");
 			reviewDiv.append("<div>"+"reviewDescription"+"</div>");
 		}
 	};
 	request.send();
+	*/
 }
 
 //src=https://googlemaps.github.io/js-map-label/examples/maplabel.html

@@ -14,7 +14,16 @@
 		<li class="navBar">
 			<a class="navButton" onclick="openTab('info')">Info</a><!--
 			--><a class="navButton" onclick="openTab('myInfo')">My Restaurant</a><!--
-			--><a class="navButton" onclick="openTab('myTransactions')">Transactions</a>
+			--><a class="navButton" onclick="openTab('myTransactions')">Transactions</a><!--
+			--><div class="dropDown">
+				<a class="dropButton">Change User
+					<i class="fa fa-carent-down"></i>
+				</a>
+				<div class="dropdown-content">
+					<a onclick="setUser(1)">User 1</a>
+					<a onclick="setUser(2)">User 2</a>
+				</div>
+			</div>
 		</li>
 		<div id="info" class="tabBody">
 			<div id="leftColumn" class="column">
@@ -29,9 +38,8 @@
 				<div>
 					Price Filter: 
 					<select id="priceFilter">
-						<option value="0">Any</option>
-						<option value="3"><$$$</option>
-						<option value="2"><$$</option>
+						<option value="3">$$$</option>
+						<option value="2">$$</option>
 						<option value="1">$</option>
 					</select>
 				</div>
@@ -49,7 +57,7 @@
 				<div>
 					Tag Filter:
 					<select id="tagFilter" multiple>
-						<option value="*">Any</option>
+						<option value="">Any</option>
 					</select>
 				</div>
 				<div>
@@ -67,7 +75,7 @@
 			</div>
 			<div class="column">
 				<h1 id="restaurantName" style="margin-top: 0px;">Restaurant Name</h1>
-				<h3 id="ownerName" style="margin-bottom: 0px;">Owner Name</h3>
+				ID:<h3 id="ownerName" style="margin-bottom: 0px;"></h3>
 				<p id="price" style="margin: 0px;">$$$</p>
 				<div class="rating">
 					<span class="ratingStars">&star;</span><!--
@@ -76,8 +84,9 @@
 					--><span class="ratingStars">&star;</span><!--
 					--><span class="ratingStars">&star;</span>
 				</div>
-				<div><span class="tags">Tags</span><span class="tags">Tags1</span></div>
-				<p>Description:</p>
+				<div id="tagsDiv"></div>
+				Description:
+				<p id="restaurantDescription"></p>
 				<button onclick="openReviews()">Reviews</button>
 				<h3 style="margin-bottom: 0px;">Leave a Review</h3>
 				<div class="ratingReview">
@@ -147,6 +156,7 @@
 			</div>
 			<p id="myDescription">My Description</p>
 			<button id="editButton" onclick="editRestaurant()">Edit Restaurant</button>
+			<button id="deleteButton" onclick="deleteRestaurant()">Delete Restaurant</button>
 		</div>
 		<div id="editInfo" class="tabBody" style="display: none">
 			<h1 style="margin-top: 0px">Restaurant Name:</h1>
