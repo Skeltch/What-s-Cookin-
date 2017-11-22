@@ -1,11 +1,9 @@
-<!doctype html>
+<?php include "query_for_restaurants.php"; ?>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<link rel="stylesheet" href="styles.css">
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script src="maplabel-compiled.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <title>What's Cookin'</title>
   </head>
@@ -20,7 +18,7 @@
 		</li>
 		<div id="info" class="tabBody">
 			<div id="leftColumn" class="column">
-				<h1 style="margin-top: 0px;">Restaurant Search</h1>
+				<h1 style="margin: 0px 0px;">Restaurant Search</h1>
 				<input placeholder="Enter Search Address" id="searchBar"></input> 
 				<div id="rangeContainer">
 					<input id="mileRange" type="range" min="1" max="100" value="10" class="slider"></input>
@@ -57,7 +55,7 @@
 				<div>
 					<button id="search" onclick="search()">Search</button>
 				</div>
-				<div style="overflow:auto; height:300px;">
+				<div style="overflow:auto; height:30vh;">
 					<table id="searchResults" style="display: none;">
 						<tr class="columnHeader">
 							<th onclick="sort(0)">Restaurant Name</th>
@@ -79,7 +77,8 @@
 					--><span class="ratingStars">&star;</span>
 				</div>
 				<div><span class="tags">Tags</span><span class="tags">Tags1</span></div>
-				<p>Description</p>
+				<p>Description:</p>
+				<button onclick="openReviews()">Reviews</button>
 				<h3 style="margin-bottom: 0px;">Leave a Review</h3>
 				<div class="ratingReview">
 					<span class="stars" onclick="rate(5)">&star;</span><!--
@@ -117,7 +116,7 @@
 						<option value="3">$$$</option>
 					</select>
 				</div>
-				<div style="margin: 10px 0px 10px 0px;">
+				<div style="margin: 10px 0px 0px 0px;">
 				Tag:
 					<select id="tagSelector">
 						<option value="*">Any</option>
@@ -129,6 +128,11 @@
 				</div>
 				<button onclick="submitReview()">Submit</button>
 			</div>
+		</div>
+		<div id="reviews" class="tabBody" style="display: none">
+			<h1>Reviews</h1>
+			<div id="reviewDiv"></div>
+			<button onclick="openTab('info')">Back</button>
 		</div>
 		<div id="myInfo" class="tabBody" style="display: none">
 			<h1 id="myRestaurantName" style="margin-top: 0px">My Restaurant Name</h1>
@@ -168,5 +172,9 @@
 		</div>
 	</div>
   </body>
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE">
+    </script>
+    <script src="maplabel-compiled.js"></script>
 	<script src="map.js"></script>
 </html>

@@ -326,38 +326,79 @@ slider.oninput = function(){
 	miles.innerHTML=this.value;
 }
 
+var HttpClient = function() {
+    this.get = function(url, aCallback) {
+        var request = new XMLHttpRequest();
+		request.open("GET",url,true);
+		request.setRequestHeader("Access-Control-Allow-Origin","http://localhost:8082");
+		request.setRequestHeader('Access-Control-Allow-Credentials', 'true');
+		//request.withCredentials = false;
+        request.onreadystatechange = function() { 
+            if (request.readyState == 4 && request.status == 200)
+                aCallback(request.responseText);
+        }
+
+        request.open( "GET", url, true );            
+        request.send( null );
+    }
+}
+
 //Search for restaurants
 var address = $("#searchBar");
 var priceFilter = $("#priceFilter");
 var ratingFilter = $("#ratingFilter");
 var tagFilter = $("#tagFilter");
 var resultsTable = document.getElementById("searchResults");
+var data;
 function search(){
-	var i=1;
-	var rows = resultsTable.childNodes[1];
-	while(rows.childNodes.length>2){
-		rows.removeChild(rows.lastChild);
-	}
+	var inputLat, inputLng;
+	var client = new HttpClient();
+		client.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address.val()+'&key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE', function(response){
+		//console.log(response);
+		inputLat = JSON.parse(response).results[0].geometry.location.lat;
+		inputLng = JSON.parse(response).results[0].geometry.location.lng;
+		var searchJSON=JSON.stringify({
+			lat:inputLat, 
+			lng:inputLng, 
+			miles: slider.val(),
+			price: priceFilter.val(),
+			tags: tagFilter.val(),
+		})
+		console.log(searchJSON);
+		$.ajax({
+			//url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php?parameters="+searchJSON,
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/search.php",
+			type: "GET",
+			contentType: "application/json",
+			dataType: "json",
+			success: function(response){
+				console.log(request.responseText);
+				data = JSON.parse(request.responseText);
+				for(var j=0; j<data.length; j++){
+					resultsTable.style.display="inline-block";
+					var row = resultsTable.insertRow(i);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					var cell3 = row.insertCell(2);
+					cell1.innerHTML=data[i].name;
+					cell2.innerHTML=data[i].price;
+					cell3.innerHTML=data[i].rating;
+					cell1.className="clickableCell";
+					cell1.addEventListener('click', function(){
+						addMarker();
+					});
+					i++;
+				}
+			}
+		});
+	});
+	/*
 	console.log(address.val());
 	console.log(slider.val());
 	console.log(priceFilter.val());
 	console.log(ratingFilter.val());
 	console.log(tagFilter.val());
-
-	resultsTable.style.display="inline-block";
-	var row = resultsTable.insertRow(i);
-	var cell1 = row.insertCell(0);
-	var cell2 = row.insertCell(1);
-	var cell3 = row.insertCell(2);
-
-	cell1.innerHTML="Name"+i;
-	cell2.innerHTML="Price"+i;
-	cell3.innerHTML="Rating"+i;
-	cell1.className="clickableCell";
-	cell1.addEventListener('click', function(){
-		addMarker();
-	});
-	i++;
+	*/
 }
 
 //Sort the results table
@@ -415,35 +456,51 @@ function sort(n){
   }
 }
 
-//function addMarker(lat, lng, text){
+//function addMarker(lat, lng, label, index){
 function addMarker(){
-	var myLatlng = new google.maps.LatLng(40.40, -74.434);
+	//var loc = new google.maps.LatLng(lat,lng);
+	var loc = new google.maps.LatLng(40.40, -74.434);
 	marker = new google.maps.Marker({
-		position: myLatlng,
+		position: loc,
 		map: map 
 	});
 	var mapLabel = new MapLabel({
+	  //text: label
 	  text: 'Home',
-	  position: myLatlng,
+	  position: loc,
 	  map: map,
 	  fontSize: 12,
 	  align: 'right'
 	});
-	mapLabel.set('position', myLatlng);
+	mapLabel.set('position', loc);
 	marker.addListener('click', function(){
 		map.setCenter(marker.getPosition());
 		//Call with id of the resturant
 		getRestaurant();
+		//getRestaurant(data[index]);
 		
 	});
 }
 
+function searchRestaurant(name){
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		getRestaurant(JSON.parse(request.responseText));
+	};
+	request.send();
+}
+
 //Load restaurant in info area
+//function getRestaurant(restaurantData){
 function getRestaurant(){
 	//Retrieve information from server and input here
 	var restaurantName=$("#restaurantName");
 	var ownerName=$("#ownerName");
 	var ratingStars=$(".ratingStars");
+	//restaurantName.html(restaurantData.name);
+	//restaurantName.html(restaurantData.ownerName);
+	//var numStars=parseInt(restaurantData.rating);
 	restaurantName.html("Changed");
 	ownerName.html("Changed");	
 	//Testing the rating
@@ -464,6 +521,19 @@ var myRatingStars=$("#myRatingStars");
 var myDescription=$("#myDescription");
 function myRestaurant(){
 	//Get information and populate
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		/*
+		var myData = JSON.parse(request.responseText);
+		myRestaurantName.html(myData.name);
+		myName.html(myData.ownerName);
+		myPrice.html(myData.price);
+		myRatingStars.html(myData.rating);
+		myDescription.html(myData.description);
+		*/
+	};
+	request.send();
 }
 
 //Update edit restaurant page
@@ -477,6 +547,12 @@ function editRestaurant(){
 
 //submit edit
 function submitEdit(){
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		
+	};
+	request.send();
 	console.log(editMyRestaurantName.val());
 	console.log(editMyDescription.val());
 	openTab('myInfo');
@@ -506,10 +582,37 @@ function submitReview(){
 	console.log($("#priceSelector").val());
 	console.log(ratingSubmit);
 	console.log(reviewBody.val());
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		
+	};
+	request.send();
 }
 
 var myTransactions = document.getElementById("myTransactionsTable");
 function loadTransactions(){
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		var transactions = JSON.parse(request.responseText);
+		var row = myTransactions.insertRow(i);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+
+		cell1.innerHTML=transactions.cName;
+		cell2.innerHTML=transactions.rName;
+		cell3.innerHTML=transactions.date;
+		cell4.innerHTML=transactions.price;
+		cell1.className="clickableCell";
+		cell1.addEventListener('click', function(){
+			searchRestaurant(transactions.rName);
+		});
+		i++;
+	};
+	request.send();
 	var i=1;
 	/*
 	var rows = myTransactions.childNodes[1];
@@ -518,21 +621,35 @@ function loadTransactions(){
 		rows.removeChild(rows.lastChild);
 	}
 	*/
-	var row = myTransactions.insertRow(i);
-	var cell1 = row.insertCell(0);
-	var cell2 = row.insertCell(1);
-	var cell3 = row.insertCell(2);
-	var cell4 = row.insertCell(3);
 
-	cell1.innerHTML="CName"+i;
-	cell2.innerHTML="RName"+i;
-	cell3.innerHTML="Date"+i;
-	cell4.innerHTML="Price"+i;
-	cell1.className="clickableCell";
-	cell1.addEventListener('click', function(){
-		getRestaurant();
-	});
-	i++;
+}
+
+function openReviews(){
+	var request = new XMLHttpRequest();
+	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
+	request.onload = function(){
+		openTab('reviews');
+		var reviewDiv = $("#reviewDiv");
+		var reviewData = JSON.parse(request.responseText);
+		for(var i=0; i<reviewData.length; i++){
+			console.log(reviewData.length);
+			var stars="";
+			for(var j=0; j<5; j++){
+				if(j<3){
+					stars+="\u2605";
+				}
+				else{
+					stars+="\u2606";
+				}
+			}
+			var name="Name";
+			reviewDiv.append("<h4>"+name+"</h4>");
+			reviewDiv.append("<div>"+stars+"</div>");
+			reviewDiv.append("<div class=\"tags\">"+"tag"+"</div>");
+			reviewDiv.append("<div>"+"reviewDescription"+"</div>");
+		}
+	};
+	request.send();
 }
 
 //src=https://googlemaps.github.io/js-map-label/examples/maplabel.html

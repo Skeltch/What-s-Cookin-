@@ -14,12 +14,13 @@ var HttpClient = function() {
         request.send( null );
     }
 }
-
+/*
 var client = new HttpClient();
 client.get('https://maps.googleapis.com/maps/api/geocode/json?address=57%20berkshire%20way&key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE', function(response){
 	console.log(response);
 	//$('#json').append("<p>"+response+"</p>");
 });
+*/
 /*
 function addMarker(){
 	var myLatlng = new google.maps.LatLng(40.40, -74.434);
