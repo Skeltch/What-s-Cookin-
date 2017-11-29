@@ -262,7 +262,7 @@ function init() {
 		{name: 'Styled Map'});
 	var myLatlng = new google.maps.LatLng(40.39, -74.434);
 	var myOptions = {
-	  zoom: 13,
+	  zoom: 10,
 	  center: myLatlng,
 	  mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
@@ -296,6 +296,15 @@ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async
 ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+
+var addresses=["Rutgers","'57 Berkshire Way'","Princeton","Trenton","Philadelphia","'Livingston Campus'","'Busch Campus'",
+				"'College Avenue'","'Cook Campus'","'Douglass Campus'","'Rutgers Student Center'","Edison", "Montvale",
+				"'New Brunswick'","Piscataway", "Pennsylvania",];
+var addressSearch=$("#addresses");
+for(var i=0; i<addresses.length; i++){
+	var opt = $("<option value="+addresses[i]+">");
+	addressSearch.append(opt);
+}
 
 var options=["Fast","Spicy","Salty","Sweet","Sour","Great Value", "Vegetarian", "Peanut Free", "WiFi",
 			"Accommodating", "Good Ambiance", "Parking", "Kid Friendly", "Pets allowed"];
@@ -346,6 +355,7 @@ var HttpClient = function() {
 //Search for restaurants
 markers=[]
 labels=[]
+var curLoc=new google.maps.Marker();
 var address = $("#searchBar");
 var priceFilter = $("#priceFilter");
 var ratingFilter = $("#ratingFilter");
@@ -354,6 +364,8 @@ var resultsTable = document.getElementById("searchResults");
 var data;
 var curRestaurant=1;
 function search(){
+	//Remove all previous search markers
+	curLoc.setMap(null);
 	for(var i=0; i<markers.length; i++){
 		markers[i].setMap(null);
 		labels[i].setMap(null);
@@ -364,51 +376,67 @@ function search(){
 	while(rows.childNodes.length>2){
 		rows.removeChild(rows.lastChild);
 	}
-	var inputLat, inputLng;
-	var client = new HttpClient();
+	if(!address.val()){
+		error("No address!");
+	}
+	else{
+		var inputLat, inputLng;
+		var client = new HttpClient();
 		client.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address.val()+'&key=AIzaSyA0EvWDobuEx-LQR-zaV5Sq-0SdvBo2hCE', function(response){
-		console.log(response);
-		inputLat = JSON.parse(response).results[0].geometry.location.lat;
-		inputLng = JSON.parse(response).results[0].geometry.location.lng;	
-		console.log(inputLat);
-		console.log(inputLng);
-		$.ajax({
-			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?lat="+inputLat+"&long="+inputLng+"&radius="+slider.value+"&rating="+ratingFilter.val()+"&price="+priceFilter.val()+"&tag="+tagFilter.val(),
-			type: "GET",
-			contentType: "application/json",
-			dataType: "json",
-			success: function(response){
-				data = response;
-				console.log(response);
-				for(var j=0; j<data.length; j++){
-					resultsTable.style.display="inline-block";
-					var row = resultsTable.insertRow(j+1);
-					var cell1 = row.insertCell(0);
-					cell1.id=j;
-					var cell2 = row.insertCell(1);
-					var cell3 = row.insertCell(2);
-					cell1.innerHTML=data[j].name;
-					cell2.innerHTML=data[j].price;
-					cell3.innerHTML=data[j].rating;
-					addMarker(data[j].lat, data[j].long, data[j].name, j);
-					cell1.className="clickableCell";
-					var loc=new google.maps.LatLng(data[j].lat,data[j].lng)
-					var restaurantData=data[j]
-					cell1.addEventListener('click', function(e){
-						curRestaurant=this.id;
-						map.setCenter(new google.maps.LatLng(data[this.id].lat, data[this.id].long));
-						//Call with id of the resturant
-						getRestaurant(this.id);
-						//getRestaurant(data[index]);
-					});
+			console.log(response);
+			inputLat = JSON.parse(response).results[0].geometry.location.lat;
+			inputLng = JSON.parse(response).results[0].geometry.location.lng;	
+			console.log(inputLat);
+			console.log(inputLng);
+			curLocation(inputLat,inputLng);
+			map.setCenter(new google.maps.LatLng(inputLat,inputLng));
+			addCircle(inputLat,inputLng,slider.value);
+			$.ajax({
+				url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_restaurants.php?lat="+inputLat+"&long="+inputLng+"&radius="+slider.value+"&rating="+ratingFilter.val()+"&price="+priceFilter.val()+"&tag="+tagFilter.val(),
+				type: "GET",
+				contentType: "application/json",
+				dataType: "json",
+				success: function(response){
+					data = response;
+					console.log(response);
+					for(var j=0; j<data.length; j++){
+						resultsTable.style.display="inline-block";
+						var row = resultsTable.insertRow(j+1);
+						var cell1 = row.insertCell(0);
+						cell1.id=j;
+						var cell2 = row.insertCell(1);
+						var cell3 = row.insertCell(2);
+						cell1.innerHTML=data[j].name;
+						cell2.innerHTML=data[j].price;
+						cell3.innerHTML=data[j].rating;
+						addMarker(data[j].lat, data[j].long, data[j].name, j);
+						cell1.className="clickableCell";
+						var loc=new google.maps.LatLng(data[j].lat,data[j].lng)
+						var restaurantData=data[j]
+						cell1.addEventListener('click', function(e){
+							curRestaurant=this.id;
+							map.setCenter(new google.maps.LatLng(data[this.id].lat, data[this.id].long));
+							//Call with id of the resturant
+							getRestaurant(this.id);
+							//getRestaurant(data[index]);
+						});
+					}
+					if(data.length==0){
+						error("No Results!");
+					}
+				},
+				error: function(response){
+					error("No Results!");
+					console.log("ERROR");
+					console.log(response.responseText);
 				}
-			},
-			error: function(response){
-				console.log("ERROR");
-				console.log(response.responseText);
-			}
+			});
 		});
-	});
+	}
+}
+
+function error(message){
+	window.alert(message);
 }
 
 //Sort the results table
@@ -466,6 +494,30 @@ function sort(n){
   }
 }
 
+var curLocMarker;
+var curLocLabel;
+function curLocation(lat, lng){
+	console.log(curLocMarker);
+	console.log(curLocLabel);
+	if(curLocMarker){
+		curLocMarker.setMap(null);
+		curLocLabel.setMap(null);
+	}
+	var loc = new google.maps.LatLng(lat,lng);
+	curLocMarker = new google.maps.Marker({
+		position: loc,
+		map: map 
+	});
+	curLocLabel = new MapLabel({
+	  text: "Current Location",
+	  position: loc,
+	  map: map,
+	  fontSize: 12,
+	  align: 'right'
+	});
+	curLocLabel.set('position', loc);
+}
+
 function addMarker(lat, lng, label, index){
 	var loc = new google.maps.LatLng(lat,lng);
 	marker = new google.maps.Marker({
@@ -474,36 +526,42 @@ function addMarker(lat, lng, label, index){
 	});
 	var mapLabel = new MapLabel({
 	  text: label,
-	  //text: 'Home',
 	  position: loc,
 	  map: map,
 	  fontSize: 12,
 	  align: 'right'
 	});
 	mapLabel.set('position', loc);
-	marker.addListener('click', function(){
+	marker.id=index;
+	marker.addListener('click', function(e){
+		console.log(this.id);
 		curRestaurant=this.id;
-		map.setCenter(marker.getPosition());
-		getRestaurant(data[this.id]);
-		
+		map.setCenter(this.getPosition());
+		getRestaurant(this.id);
 	});
 	markers.push(marker);
 	labels.push(mapLabel);
 	return marker;
 }
-
-function searchRestaurant(name){
-	var request = new XMLHttpRequest();
-	request.open('GET', 'https://learnwebcode.github.io/json-example/animals-1.json');
-	request.onload = function(){
-		getRestaurant(JSON.parse(request.responseText));
-	};
-	request.send();
+var circle= new google.maps.Circle();
+function addCircle(lat, lng, radius){
+	circle.setMap(null);
+	var loc = new google.maps.LatLng(lat,lng);
+	var meters=radius*1609.34;
+	circle = new google.maps.Circle({
+		map: map,
+		radius: meters,
+		fillColor: '#4f5db5',
+		fillOpacity: 0.35,
+		center: loc
+	});
 }
 
 //Load restaurant in info area
 function getRestaurant(index){
 	//Retrieve information from server and input here
+	console.log(index);
+	console.log(data[index].id);
 	var restaurantName=$("#restaurantName");
 	var ownerName=$("#ownerName");
 	var ratingStars=$(".ratingStars");
@@ -546,24 +604,29 @@ function myRestaurant(){
 		dataType: "json",
 		success: function(response){
 			console.log(response);
-			myRestaurantName.html(response[0].name);
-			myName.html(response[0].id);
-			var stars="";
-			for(var j=0; j<5; j++){
-				if(j<parseInt(response[0].rating)){
-					stars+="\u2605";
-				}
-				else{
-					stars+="\u2606";
-				}
+			if(response.length==0){
+				error("You don't own a restaurant!");
 			}
-			var priceString="";
-			for(j=0; j<parseInt(response[0].price); j++){
-				priceString+="$";
+			else{
+				myRestaurantName.html(response[0].name);
+				myName.html(response[0].id);
+				var stars="";
+				for(var j=0; j<5; j++){
+					if(j<parseInt(response[0].rating)){
+						stars+="\u2605";
+					}
+					else{
+						stars+="\u2606";
+					}
+				}
+				var priceString="";
+				for(j=0; j<parseInt(response[0].price); j++){
+					priceString+="$";
+				}
+				myRatingStars.html(stars);
+				myPrice.html(priceString);
+				myDescription.html(response[0].desc);
 			}
-			myRatingStars.html(stars);
-			myPrice.html(priceString);
-			myDescription.html(response[0].desc);
 		},
 		error: function(response){
 			console.log(response);
@@ -575,6 +638,7 @@ var userId=1
 function setUser(id){
 	userId=parseInt(id);
 	console.log(userId);
+	openTab('info');
 }
 
 //Update edit restaurant page
@@ -647,21 +711,36 @@ function rate(amount){
 //Grab the inputs and submit review
 var reviewBody = $("#reviewBody");
 function submitReview(){
-	$.ajax({
-		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/insert_review.php",
-		data: {
-			REST_ID: curRestaurant,
-			CUST_ID: userId,
-			RATING: ratingSubmit,
-			PRICE: $("#priceSelector").val(),
-			DESCRIPTION: reviewBody.val(),
-			TAG: tagSelector.val()
-		},
-		type: "POST",
-		success: function(response){
-			console.log(response);
-		}
-	});
+	console.log(ratingSubmit);
+	console.log(userId);
+	console.log(data[curRestaurant].id);
+	console.log(reviewBody.val());
+	if(!ratingSubmit || userId==0 || data[curRestaurant].id==0 || reviewBody.val()==""){
+		error("Improper Review!");
+	}
+	else{
+		$.ajax({
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/insert_review.php",
+			data: {
+				REST_ID: data[curRestaurant].id,
+				CUST_ID: userId,
+				RATING: ratingSubmit,
+				PRICE: $("#priceSelector").val(),
+				DESCRIPTION: reviewBody.val(),
+				TAG: tagSelector.val()
+			},
+			type: "POST",
+			success: function(response){
+				console.log(response);
+				if(response[0]=="Successful insert"){
+					error("Success!");
+				}
+				else{
+					error("Failure!");
+				}
+			}
+		});
+	}
 }
 
 var myTransactions = document.getElementById("myTransactionsTable");
@@ -701,7 +780,7 @@ function loadTransactions(){
 function openReviews(){
 	$("#reviewDiv").html('');
 	$.ajax({
-			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_reviews.php?REST_ID="+curRestaurant,
+			url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/query_for_reviews.php?REST_ID="+data[curRestaurant].id,
 			type: "GET",
 			contentType: "application/json",
 			dataType: "text",
@@ -713,6 +792,7 @@ function openReviews(){
 				for(var i=0; i<reviewData.length; i++){
 					var stars="";
 					for(var j=0; j<5; j++){
+						console.log(reviewData[i].rating);
 						if(j<parseInt(reviewData[i].rating)){
 							stars+="\u2605";
 						}

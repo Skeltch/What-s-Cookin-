@@ -31,7 +31,13 @@
 		<div id="info" class="tabBody">
 			<div id="leftColumn" class="column">
 				<h1 style="margin: 0px 0px;">Restaurant Search</h1>
+				<!--
 				<input placeholder="Enter Search Address" id="searchBar"></input> 
+				-->
+				<input list="addresses" id="searchBar">
+					<datalist id="addresses">
+					</datalist>
+				</input>
 				<div id="rangeContainer">
 					<input id="mileRange" type="range" min="1" max="100" value="10" class="slider"></input>
 				</div>
