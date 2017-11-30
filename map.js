@@ -497,8 +497,6 @@ function sort(n){
 var curLocMarker;
 var curLocLabel;
 function curLocation(lat, lng){
-	console.log(curLocMarker);
-	console.log(curLocLabel);
 	if(curLocMarker){
 		curLocMarker.setMap(null);
 		curLocLabel.setMap(null);
@@ -534,7 +532,6 @@ function addMarker(lat, lng, label, index){
 	mapLabel.set('position', loc);
 	marker.id=index;
 	marker.addListener('click', function(e){
-		console.log(this.id);
 		curRestaurant=this.id;
 		map.setCenter(this.getPosition());
 		getRestaurant(this.id);
@@ -560,8 +557,6 @@ function addCircle(lat, lng, radius){
 //Load restaurant in info area
 function getRestaurant(index){
 	//Retrieve information from server and input here
-	console.log(index);
-	console.log(data[index].id);
 	var restaurantName=$("#restaurantName");
 	var ownerName=$("#ownerName");
 	var ratingStars=$(".ratingStars");
@@ -711,10 +706,6 @@ function rate(amount){
 //Grab the inputs and submit review
 var reviewBody = $("#reviewBody");
 function submitReview(){
-	console.log(ratingSubmit);
-	console.log(userId);
-	console.log(data[curRestaurant].id);
-	console.log(reviewBody.val());
 	if(!ratingSubmit || userId==0 || data[curRestaurant].id==0 || reviewBody.val()==""){
 		error("Improper Review!");
 	}
@@ -815,6 +806,28 @@ function openReviews(){
 			error: function(response){
 				console.log(response);
 			}	
+	});
+}
+
+var price = $("#transactionCost");
+function book(){
+	$.ajax({
+		url: "http://ec2-184-73-12-172.compute-1.amazonaws.com/insert_transaction.php",
+		data: {
+			REST_ID: data[curRestaurant].id,
+			CUST_ID: userId,
+			COST: price.val()
+		},
+		type: "POST",
+		success: function(response){
+			console.log(response);
+			if(response[0]=="Successful insert"){
+				error("Success!");
+			}
+			else{
+				error("Failure!");
+			}
+		}
 	});
 }
 
